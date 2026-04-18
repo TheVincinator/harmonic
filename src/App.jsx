@@ -11,13 +11,12 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [session, setSession] = useState(null);
-  const [araPhase, setAraPhase] = useState(null);
+  const [araContext, setAraContext] = useState(null);
 
   const handleSubmit = async (description) => {
     setLoading(true);
     setError(null);
 
-    // Run Claude + Ara in parallel
     const [claudeResult, araResult] = await Promise.allSettled([
       analyzeTask(description),
       getAraRecommendation(),
@@ -33,7 +32,7 @@ export default function App() {
     setTask(description);
     setSession(claudeResult.value);
     if (araResult.status === 'fulfilled') {
-      setAraPhase(araResult.value.phase);
+      setAraContext(araResult.value.calendar_context ?? araResult.value.phase ?? null);
     }
   };
 
@@ -41,7 +40,7 @@ export default function App() {
     setSession(null);
     setTask('');
     setError(null);
-    setAraPhase(null);
+    setAraContext(null);
   };
 
   return (
@@ -56,8 +55,11 @@ export default function App() {
           <TaskInput onSubmit={handleSubmit} loading={loading} error={error} />
         ) : (
           <>
-            {araPhase && (
-              <div className="araTag">⚡ Ara context: {araPhase}</div>
+            {araContext && (
+              <div className="araTag">
+                <span className="araDot" />
+                Ara: {araContext}
+              </div>
             )}
             <FocusPlayer session={session} task={task} />
             <PomodoroTimer />
