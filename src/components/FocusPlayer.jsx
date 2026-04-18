@@ -1,6 +1,6 @@
 import styles from './FocusPlayer.module.css';
 
-const PLAYLISTS = {
+const FALLBACK_PLAYLISTS = {
   'deep focus': { id: '37i9dQZF1DWZeKCadgRdKQ', tags: 'lofi · minimal · no vocals' },
   'creative':   { id: '37i9dQZF1DX9sIqqvKsjEK', tags: 'instrumental · cinematic' },
   'energetic':  { id: '37i9dQZF1DX0SM0LYsmbMT', tags: 'electronic · driving' },
@@ -9,8 +9,10 @@ const PLAYLISTS = {
 };
 
 export default function FocusPlayer({ session, task }) {
-  const playlist = PLAYLISTS[session.vibe] ?? PLAYLISTS['deep focus'];
-  const embedUrl = `https://open.spotify.com/embed/playlist/${playlist.id}?utm_source=generator&theme=0`;
+  const fallback = FALLBACK_PLAYLISTS[session.vibe] ?? FALLBACK_PLAYLISTS['deep focus'];
+  const playlistId = session.playlist_id ?? fallback.id;
+  const tags = session.tags ?? fallback.tags;
+  const embedUrl = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0`;
 
   return (
     <div className={styles.container}>
@@ -19,7 +21,7 @@ export default function FocusPlayer({ session, task }) {
           <div className={styles.vibeLabel}>{session.label}</div>
           <span className={styles.araBadge}>⚡ Ara</span>
         </div>
-        <div className={styles.vibeTags}>{playlist.tags}</div>
+        <div className={styles.vibeTags}>{tags}</div>
         <p className={styles.tip}>{session.tip}</p>
         {task && <div className={styles.taskLabel}>{task}</div>}
       </div>
@@ -33,7 +35,7 @@ export default function FocusPlayer({ session, task }) {
       />
       <a
         className={styles.spotifyLink}
-        href={`https://open.spotify.com/playlist/${playlist.id}`}
+        href={`https://open.spotify.com/playlist/${playlistId}`}
         target="_blank"
         rel="noopener noreferrer"
       >

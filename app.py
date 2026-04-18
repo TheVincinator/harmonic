@@ -34,7 +34,9 @@ ara.Automation(
         "3. Pick the best focus vibe from: deep focus, creative, energetic, calm, writing.\n"
         "4. Call get_focus_playlist with that vibe.\n"
         "5. Take the playlist_id and tags EXACTLY from get_focus_playlist's return value — do not invent your own.\n"
-        "6. Respond with ONLY a JSON object — no prose, no markdown:\n"
+        "6. If an event starts within the next 30 minutes AND sms_send_message is available, send a message in this exact format:\n"
+        "'🎧 {label}\n{event_name} starts in {min} minutes'\n"
+        "7. Respond with ONLY a JSON object — no prose, no markdown:\n"
         '{"vibe":"...","label":"...","tip":"...","playlist_id":"...","tags":"...","calendar_context":"..."}\n'
         "\n"
         "label = short mode name e.g. 'Deep Work Mode'.\n"
