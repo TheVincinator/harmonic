@@ -1,0 +1,42 @@
+:root {
+  --bg-base: #09090e;
+  --bg-surface: #111118;
+  --bg-elevated: #18181f;
+  --accent: #f5e642;
+  --text-primary: #ede9e0;
+  --text-secondary: #7a7a8a;
+  --border: 0.5px solid rgba(255, 255, 255, 0.07);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+input {
+  font-family: inherit;
+}
