@@ -33,12 +33,14 @@ ara.Automation(
         "2. Read the event titles and descriptions to understand what kind of work is coming up.\n"
         "3. Pick the best focus vibe from: deep focus, creative, energetic, calm, writing.\n"
         "4. Call get_focus_playlist with that vibe.\n"
-        "5. Respond with ONLY a JSON object — no prose, no markdown:\n"
-        '{"vibe":"...","label":"...","tip":"...","playlist_id":"...","tags":"...","calendar_context":"one sentence describing what you found in the calendar"}\n'
+        "5. Take the playlist_id and tags EXACTLY from get_focus_playlist's return value — do not invent your own.\n"
+        "6. Respond with ONLY a JSON object — no prose, no markdown:\n"
+        '{"vibe":"...","label":"...","tip":"...","playlist_id":"...","tags":"...","calendar_context":"..."}\n'
         "\n"
         "label = short mode name e.g. 'Deep Work Mode'.\n"
         "tip = one sentence on why this music fits the upcoming work.\n"
-        "calendar_context = e.g. 'You have ML Research block in 20 min' or 'No events — using time of day'.\n"
+        "calendar_context = e.g. 'You have ML Research in 20 min' or 'No events — using time of day'.\n"
+        "playlist_id and tags must come directly from get_focus_playlist output, not made up.\n"
         "\n"
         "If Google Calendar is unavailable or has no events, fall back to time-of-day context."
     ),
