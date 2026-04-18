@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FocusPlayer from './components/FocusPlayer';
 import PomodoroTimer from './components/PomodoroTimer';
+import { getAraRecommendation } from './lib/ara';
 import './App.css';
 
 function getLocalVibe() {
@@ -13,8 +14,51 @@ function getLocalVibe() {
   return { vibe: 'deep focus', label: 'Late Night Mode', tip: 'Minimal distractions for late-night focus.' };
 }
 
+const LOADING_STEPS = [
+  'Reading your context…',
+  'Analyzing your focus state…',
+  'Selecting the perfect sound…',
+];
+
 export default function App() {
-  const [session] = useState(getLocalVibe());
+  const [session, setSession] = useState(null);
+  const [stepIndex, setStepIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStepIndex(i => Math.min(i + 1, LOADING_STEPS.length - 1));
+    }, 1200);
+
+    getAraRecommendation()
+      .then(result => {
+        clearInterval(interval);
+        setSession({ vibe: result.vibe, label: result.label, tip: result.tip });
+      })
+      .catch(() => {
+        clearInterval(interval);
+        setSession(getLocalVibe());
+      });
+
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!session) {
+    return (
+      <div className="app">
+        <header className="header">
+          <div className="logo">harmonic</div>
+          <div className="tagline">music that matches your mind</div>
+        </header>
+        <div className="loading">
+          <div className="loadingStep">{LOADING_STEPS[stepIndex]}</div>
+          <div className="loadingBar">
+            <div className="loadingFill" />
+          </div>
+          <div className="loadingPowered">⚡ Ara is thinking</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app">
@@ -22,7 +66,6 @@ export default function App() {
         <div className="logo">harmonic</div>
         <div className="tagline">music that matches your mind</div>
       </header>
-
       <main className="main">
         <FocusPlayer session={session} task={null} />
         <PomodoroTimer />
