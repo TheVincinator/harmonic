@@ -1,7 +1,7 @@
 const APP_ID = process.env.REACT_APP_ARA_APP_ID;
 const ARA_KEY = process.env.REACT_APP_ARA_KEY;
 
-export async function getAraRecommendation() {
+export async function getAraRecommendation(text) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 35000);
 
@@ -12,7 +12,7 @@ export async function getAraRecommendation() {
         'Authorization': `Bearer ${ARA_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({ task: text }),
       signal: controller.signal,
     });
     if (!response.ok) throw new Error(`Ara error: ${response.status}`);

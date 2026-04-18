@@ -102,6 +102,47 @@
   border-color: rgba(42, 38, 34, 0.35);
 }
 
+.araSection {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.araInput {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid rgba(42, 38, 34, 0.18);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: #ffffff;
+  color: var(--text-primary);
+}
+
+.araInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.araBtn {
+  padding: 10px 16px;
+  background: var(--accent);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.araBtn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.araBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 @media (max-width: 640px) {
   .ring {
     width: 170px;

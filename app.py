@@ -24,27 +24,39 @@ def get_focus_playlist(vibe: str) -> dict:
         "spotify_url": f"https://open.spotify.com/playlist/{p['id']}",
     }
 
+@ara.tool
+def get_dnd_apps(task_description: str) -> list:
+    """Suggest apps to put in Do Not Disturb based on the task."""
+    # Simple logic - in a real implementation, this could be more sophisticated
+    apps = []
+    if "coding" in task_description.lower() or "programming" in task_description.lower():
+        apps = ["Slack", "Discord", "Email"]
+    elif "writing" in task_description.lower():
+        apps = ["Social Media", "News Apps"]
+    elif "meeting" in task_description.lower():
+        apps = ["Notifications"]
+    else:
+        apps = ["Social Media", "Email", "Messaging Apps"]
+    return apps
+
 ara.Automation(
     "harmonic-focus-agent",
     system_instructions=(
         "You are Harmonic, an autonomous focus music assistant. "
         "Each time you run:\n"
-        "1. Use google_calendar_list_events to get the user's upcoming events for the next 3 hours.\n"
-        "2. Read the event titles and descriptions to understand what kind of work is coming up.\n"
-        "3. Pick the best focus vibe from: deep focus, creative, energetic, calm, writing.\n"
+        "1. If a task description is provided in input, use that. Otherwise, use google_calendar_list_events to get upcoming events.\n"
+        "2. Also use google_calendar_list_events to get today's events (from start of day to end of day).\n"
+        "3. Analyze the task/event to pick the best focus vibe from: deep focus, creative, energetic, calm, writing.\n"
         "4. Call get_focus_playlist with that vibe.\n"
-        "5. Take the playlist_id and tags EXACTLY from get_focus_playlist's return value — do not invent your own.\n"
-        "6. If an event starts within the next 30 minutes AND sms_send_message is available, send a message in this exact format:\n"
-        "'🎧 {label}\n{event_name} starts in {min} minutes'\n"
-        "7. Respond with ONLY a JSON object — no prose, no markdown:\n"
-        '{"vibe":"...","label":"...","tip":"...","playlist_id":"...","tags":"...","calendar_context":"..."}\n'
+        "5. Call get_dnd_apps with the task/event description.\n"
+        "6. If an event starts within the next 30 minutes AND sms_send_message is available, send SMS with:\n"
+        "'🎧 {label}\n{spotify_url}\nDND: {dnd_apps joined by commas}'\n"
+        "7. Respond with ONLY a JSON object:\n"
+        '{"vibe":"...","label":"...","tip":"...","playlist_id":"...","tags":"...","dnd_apps":[...],"calendar_context":"...","today_events":[...]}\n'
         "\n"
-        "label = short mode name e.g. 'Deep Work Mode'.\n"
-        "tip = one sentence on why this music fits the upcoming work.\n"
-        "calendar_context = e.g. 'You have ML Research in 20 min' or 'No events — using time of day'.\n"
-        "playlist_id and tags must come directly from get_focus_playlist output, not made up.\n"
-        "\n"
-        "If Google Calendar is unavailable or has no events, fall back to time-of-day context."
+        "today_events = array of today's events, each with title, start_time, end_time.\n"
+        "calendar_context = event info or 'Task input mode'.\n"
+        "Use exact values from tools."
     ),
-    tools=[get_focus_playlist],
+    tools=[get_focus_playlist, get_dnd_apps],
 )

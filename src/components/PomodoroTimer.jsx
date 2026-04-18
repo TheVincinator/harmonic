@@ -1,14 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
+import { getAraRecommendation } from '../lib/ara';
 import styles from './PomodoroTimer.module.css';
 
 const WORK_SECS = 25 * 60;
 const BREAK_SECS = 5 * 60;
 
-export default function PomodoroTimer() {
+export default function PomodoroTimer({ onAraUpdate }) {
   const [secondsLeft, setSecondsLeft] = useState(WORK_SECS);
   const [running, setRunning] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
   const intervalRef = useRef(null);
+  const [araText, setAraText] = useState('');
+  const [araLoading, setAraLoading] = useState(false);
 
   useEffect(() => {
     if (running) {
@@ -33,6 +36,20 @@ export default function PomodoroTimer() {
     setRunning(false);
     setIsBreak(false);
     setSecondsLeft(WORK_SECS);
+  };
+
+  const handleAraSubmit = async () => {
+    if (!araText.trim()) return;
+    setAraLoading(true);
+    try {
+      const result = await getAraRecommendation(araText);
+      if (onAraUpdate) onAraUpdate(result);
+    } catch (error) {
+      console.error('Ara error:', error);
+    } finally {
+      setAraLoading(false);
+      setAraText('');
+    }
   };
 
   const mins = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
@@ -73,6 +90,25 @@ export default function PomodoroTimer() {
           {running ? 'Pause' : 'Start'}
         </button>
         <button type="button" className={styles.resetBtn} onClick={reset}>Reset</button>
+      </div>
+
+      <div className={styles.araSection}>
+        <input
+          type="text"
+          value={araText}
+          onChange={(e) => setAraText(e.target.value)}
+          placeholder="Ask Ara for a playlist..."
+          className={styles.araInput}
+          onKeyDown={(e) => e.key === 'Enter' && handleAraSubmit()}
+        />
+        <button
+          type="button"
+          onClick={handleAraSubmit}
+          disabled={araLoading || !araText.trim()}
+          className={styles.araBtn}
+        >
+          {araLoading ? '...' : 'Send'}
+        </button>
       </div>
     </div>
   );

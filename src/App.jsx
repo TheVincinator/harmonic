@@ -41,7 +41,7 @@ export default function App() {
 
     const [claudeResult, araResult] = await Promise.allSettled([
       analyzeTask(description),
-      getAraRecommendation(),
+      getAraRecommendation(description),
     ]);
 
     setLoading(false);
@@ -52,11 +52,15 @@ export default function App() {
     }
 
     setTask(description);
-    setSession(claudeResult.value);
+    let sessionData = claudeResult.value;
 
     if (araResult.status === 'fulfilled') {
-      setAraContext(araResult.value.calendar_context ?? araResult.value.phase ?? null);
+      const araData = araResult.value;
+      sessionData = { ...sessionData, ...araData };
+      setAraContext(araData.dnd_apps ? `DND: ${araData.dnd_apps.join(', ')}` : araData.calendar_context ?? araData.phase ?? null);
     }
+
+    setSession(sessionData);
   };
 
   const handleReset = () => {
@@ -141,8 +145,25 @@ export default function App() {
 
             <aside className="sidebar">
               <section className="panel panel--ghost">
-                <PomodoroTimer />
+                <PomodoroTimer onAraUpdate={(araData) => {
+                  setSession(prev => ({ ...prev, ...araData }));
+                  setAraContext(araData.dnd_apps ? `DND: ${araData.dnd_apps.join(', ')}` : araData.calendar_context ?? araData.phase ?? null);
+                }} />
               </section>
+
+              {session.today_events && session.today_events.length > 0 && (
+                <section className="panel panel--ghost panel--inset">
+                  <h3 className="panel__heading">Today's Schedule</h3>
+                  <ul className="event-list">
+                    {session.today_events.map((event, index) => (
+                      <li key={index} className="event-item">
+                        <span className="event-time">{event.start_time} - {event.end_time}</span>
+                        <span className="event-title">{event.title}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
 
               <section className="panel panel--ghost panel--inset">
                 <div className="session-meta">
