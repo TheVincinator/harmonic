@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from './TaskInput.module.css';
 
-export default function TaskInput({ onSubmit, loading, error }) {
+export default function TaskInput({ onSubmit, loading, error, compact }) {
   const [value, setValue] = useState('');
 
   const handleSubmit = () => {
@@ -10,7 +10,9 @@ export default function TaskInput({ onSubmit, loading, error }) {
 
   return (
     <div className={styles.container}>
-      <label className={styles.label}>What are you working on?</label>
+      <label className={compact ? styles.labelCompact : styles.label}>
+        {compact ? 'Override — what are you working on?' : 'What are you working on?'}
+      </label>
       <div className={styles.inputRow}>
         <textarea
           className={styles.textarea}
@@ -23,7 +25,7 @@ export default function TaskInput({ onSubmit, loading, error }) {
               handleSubmit();
             }
           }}
-          rows={3}
+          rows={compact ? 2 : 3}
         />
       </div>
       <button
@@ -36,7 +38,7 @@ export default function TaskInput({ onSubmit, loading, error }) {
             <span /><span /><span />
             Finding your sound
           </span>
-        ) : 'Start focus session →'}
+        ) : compact ? 'Override →' : 'Start focus session →'}
       </button>
       {error && <p className={styles.error}>{error}</p>}
     </div>

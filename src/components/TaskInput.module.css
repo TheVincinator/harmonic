@@ -13,6 +13,13 @@
   line-height: 1.2;
 }
 
+.labelCompact {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
 .inputRow {
   display: flex;
   flex-direction: column;
