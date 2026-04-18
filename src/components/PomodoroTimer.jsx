@@ -38,16 +38,22 @@ export default function PomodoroTimer() {
   const mins = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
   const secs = String(secondsLeft % 60).padStart(2, '0');
   const progress = secondsLeft / (isBreak ? BREAK_SECS : WORK_SECS);
+  const phase = isBreak ? 'Break' : 'Focus';
 
   return (
     <div className={styles.container}>
-      <div className={styles.mode}>{isBreak ? 'Break' : 'Focus'}</div>
+      <div className={styles.header}>
+        <h2 className={styles.title}>Timer</h2>
+        <div className={styles.mode}>{phase}</div>
+      </div>
 
       <div className={styles.ring}>
         <svg viewBox="0 0 100 100" className={styles.svg}>
           <circle cx="50" cy="50" r="44" className={styles.track} />
           <circle
-            cx="50" cy="50" r="44"
+            cx="50"
+            cy="50"
+            r="44"
             className={styles.fill}
             strokeDasharray={`${2 * Math.PI * 44}`}
             strokeDashoffset={`${2 * Math.PI * 44 * (1 - progress)}`}
@@ -56,11 +62,17 @@ export default function PomodoroTimer() {
         <div className={styles.time}>{mins}:{secs}</div>
       </div>
 
+      <p className={styles.copy}>
+        {isBreak
+          ? 'Let your attention reset for a moment, then come back before drift sets in.'
+          : 'Keep the scope small. Let the timer create the urgency instead of the interface.'}
+      </p>
+
       <div className={styles.controls}>
-        <button className={styles.btn} onClick={() => setRunning(r => !r)}>
+        <button type="button" className={styles.btn} onClick={() => setRunning(r => !r)}>
           {running ? 'Pause' : 'Start'}
         </button>
-        <button className={styles.resetBtn} onClick={reset}>Reset</button>
+        <button type="button" className={styles.resetBtn} onClick={reset}>Reset</button>
       </div>
     </div>
   );

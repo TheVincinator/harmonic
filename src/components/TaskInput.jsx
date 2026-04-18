@@ -10,6 +10,7 @@ export default function TaskInput({ onSubmit, loading, error, compact }) {
 
   return (
     <div className={styles.container}>
+      <p className={styles.eyebrow}>Start here</p>
       <label className={compact ? styles.labelCompact : styles.label}>
         {compact ? 'Override — what are you working on?' : 'What are you working on?'}
       </label>
@@ -28,7 +29,9 @@ export default function TaskInput({ onSubmit, loading, error, compact }) {
           rows={compact ? 2 : 3}
         />
       </div>
+
       <button
+        type="button"
         className={styles.btn}
         onClick={handleSubmit}
         disabled={!value.trim() || loading}
@@ -40,6 +43,11 @@ export default function TaskInput({ onSubmit, loading, error, compact }) {
           </span>
         ) : compact ? 'Override →' : 'Start focus session →'}
       </button>
+
+      <p className={styles.note}>
+        The calmer this screen feels, the easier it is to commit to the session that follows.
+      </p>
+
       {error && <p className={styles.error}>{error}</p>}
     </div>
   );

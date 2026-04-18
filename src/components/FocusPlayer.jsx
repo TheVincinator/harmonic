@@ -1,11 +1,26 @@
 import styles from './FocusPlayer.module.css';
 
 const FALLBACK_PLAYLISTS = {
-  'deep focus': { id: '37i9dQZF1DWZeKCadgRdKQ', tags: 'lofi · minimal · no vocals' },
-  'creative':   { id: '37i9dQZF1DX9sIqqvKsjEK', tags: 'instrumental · cinematic' },
-  'energetic':  { id: '37i9dQZF1DX0SM0LYsmbMT', tags: 'electronic · driving' },
-  'calm':       { id: '37i9dQZF1DX4sWSpwq3LiO', tags: 'piano · gentle · serene' },
-  'writing':    { id: '37i9dQZF1DWXLeA8Omikj7', tags: 'ambient · brain food' },
+  'deep focus': {
+    id: '37i9dQZF1DWZeKCadgRdKQ',
+    tags: 'lofi, minimal, no vocals',
+  },
+  creative: {
+    id: '37i9dQZF1DX9sIqqvKsjEK',
+    tags: 'instrumental, cinematic',
+  },
+  energetic: {
+    id: '37i9dQZF1DX0SM0LYsmbMT',
+    tags: 'electronic, driving',
+  },
+  calm: {
+    id: '37i9dQZF1DX4sWSpwq3LiO',
+    tags: 'piano, gentle, serene',
+  },
+  writing: {
+    id: '37i9dQZF1DWXLeA8Omikj7',
+    tags: 'ambient, brain food',
+  },
 };
 
 export default function FocusPlayer({ session, task }) {
@@ -17,13 +32,11 @@ export default function FocusPlayer({ session, task }) {
   return (
     <div className={styles.container}>
       <div className={styles.context}>
-        <div className={styles.header}>
-          <div className={styles.vibeLabel}>{session.label}</div>
-          <span className={styles.araBadge}>⚡ Ara</span>
-        </div>
-        <div className={styles.vibeTags}>{tags}</div>
+        <h2 className={styles.task}>{task || session.label}</h2>
+        <p className={styles.meta}>
+          {session.label} with {tags}
+        </p>
         <p className={styles.tip}>{session.tip}</p>
-        {task && <div className={styles.taskLabel}>{task}</div>}
       </div>
 
       <iframe
@@ -33,6 +46,7 @@ export default function FocusPlayer({ session, task }) {
         loading="lazy"
         title="Focus playlist"
       />
+
       <a
         className={styles.spotifyLink}
         href={`https://open.spotify.com/playlist/${playlistId}`}

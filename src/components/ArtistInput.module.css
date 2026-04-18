@@ -45,7 +45,7 @@
   width: 40px;
   height: 40px;
   background: var(--accent);
-  color: #09090e;
+  color: #ffffff;
   font-size: 1.25rem;
   font-weight: 700;
   border-radius: var(--radius-sm);
@@ -109,7 +109,7 @@
   content: '';
   flex: 1;
   height: 0.5px;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(42, 38, 34, 0.1);
 }
 
 .importBtn {
@@ -133,7 +133,7 @@
 }
 
 .importBtn:not(:disabled):hover {
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(42, 38, 34, 0.25);
 }
 
 .lfmError {

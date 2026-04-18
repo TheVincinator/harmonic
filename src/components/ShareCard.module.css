@@ -96,8 +96,8 @@
 }
 
 .copyBtn:hover:not(:disabled) {
-  border-color: rgba(255, 255, 255, 0.2);
-  color: var(--accent);
+  border-color: rgba(42, 38, 34, 0.25);
+  color: var(--accent-strong);
 }
 
 .copyBtn:disabled {
