@@ -45,6 +45,14 @@ export default function FocusPlayer({ session, task }) {
         loading="lazy"
         title="Focus playlist"
       />
+      <a
+        className={styles.spotifyLink}
+        href={`https://open.spotify.com/playlist/${playlist.id}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Open in Spotify ↗
+      </a>
     </div>
   );
 }

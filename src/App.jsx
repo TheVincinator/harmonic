@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import TaskInput from './components/TaskInput';
 import FocusPlayer from './components/FocusPlayer';
 import PomodoroTimer from './components/PomodoroTimer';
@@ -11,28 +11,29 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [session, setSession] = useState(null);
-
-  const [araSession, setAraSession] = useState(null);
-  const [araLoading, setAraLoading] = useState(true);
-
-  useEffect(() => {
-    getAraRecommendation()
-      .then(setAraSession)
-      .catch(() => setAraSession(null))
-      .finally(() => setAraLoading(false));
-  }, []);
+  const [araPhase, setAraPhase] = useState(null);
 
   const handleSubmit = async (description) => {
     setLoading(true);
     setError(null);
-    try {
-      const result = await analyzeTask(description);
-      setTask(description);
-      setSession(result);
-    } catch {
+
+    // Run Claude + Ara in parallel
+    const [claudeResult, araResult] = await Promise.allSettled([
+      analyzeTask(description),
+      getAraRecommendation(),
+    ]);
+
+    setLoading(false);
+
+    if (claudeResult.status === 'rejected') {
       setError('Something went wrong. Try again.');
-    } finally {
-      setLoading(false);
+      return;
+    }
+
+    setTask(description);
+    setSession(claudeResult.value);
+    if (araResult.status === 'fulfilled') {
+      setAraPhase(araResult.value.phase);
     }
   };
 
@@ -40,10 +41,8 @@ export default function App() {
     setSession(null);
     setTask('');
     setError(null);
+    setAraPhase(null);
   };
-
-  const activeSession = session ?? araSession;
-  const activeTask = session ? task : araSession ? `Auto-detected: ${araSession.phase}` : '';
 
   return (
     <div className="app">
@@ -53,39 +52,20 @@ export default function App() {
       </header>
 
       <main className="main">
-        {araLoading && (
-          <p className="araStatus">
-            <span className="araDot" />
-            Ara is reading your context…
-          </p>
-        )}
-
-        {activeSession && (
+        {!session ? (
+          <TaskInput onSubmit={handleSubmit} loading={loading} error={error} />
+        ) : (
           <>
-            {!session && araSession && (
-              <div className="araTag">⚡ Auto-detected by Ara</div>
+            {araPhase && (
+              <div className="araTag">⚡ Ara context: {araPhase}</div>
             )}
-            {session && (
-              <div className="araTag">✎ Your override</div>
-            )}
-            <FocusPlayer session={activeSession} task={activeTask} />
+            <FocusPlayer session={session} task={task} />
             <PomodoroTimer />
-            {session && (
-              <button className="resetBtn" onClick={handleReset}>
-                ← Back to Ara suggestion
-              </button>
-            )}
+            <button className="resetBtn" onClick={handleReset}>
+              ← Change task
+            </button>
           </>
         )}
-
-        <div className={activeSession ? 'overrideSection' : ''}>
-          <TaskInput
-            onSubmit={handleSubmit}
-            loading={loading}
-            error={error}
-            compact={!!activeSession}
-          />
-        </div>
       </main>
     </div>
   );

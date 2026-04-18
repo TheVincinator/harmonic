@@ -58,3 +58,15 @@
   border: none;
   border-radius: var(--radius-lg);
 }
+
+.spotifyLink {
+  align-self: center;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.spotifyLink:hover {
+  color: var(--text-primary);
+}
