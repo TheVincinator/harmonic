@@ -30,7 +30,7 @@ export default function FocusPlayer({ session, task }) {
   return (
     <div className={styles.container}>
       <div className={styles.context}>
-        <div className={styles.taskLabel}>{task}</div>
+        {task && <div className={styles.taskLabel}>{task}</div>}
         <div className={styles.vibe}>
           <span className={styles.vibeLabel}>{session.label}</span>
           <span className={styles.vibeTags}>{playlist.tags}</span>
